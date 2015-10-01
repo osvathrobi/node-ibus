@@ -1,0 +1,8 @@
+{
+    "name": "superinviteApp",
+    "version": "0.0.0",
+    "dependencies": {
+        "serialport": "*"
+    }
+
+}
