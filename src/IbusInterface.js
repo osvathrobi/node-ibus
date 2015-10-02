@@ -2,6 +2,8 @@ var serialport = require("serialport");
 var Log = require('log'),
     log = new Log('debug');
 
+var IbusProtocol = require('./IbusProtocol.js');
+
 var IbusInterface = function() {
 
     // self reference
@@ -36,10 +38,12 @@ var IbusInterface = function() {
 
                 log.info('Port Open [' + device + ']');
 
-                serialPort.on('data', function(data) {
-                    log.debug(data);
-                });
+                var parser = new IbusProtocol();
+                serialPort.pipe(parser);
 
+                parser.on('message', function(msg) {
+                    console.log('Got a validated message!!', msg);
+                })
 
             }
         });
