@@ -35,23 +35,21 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
         // try to interpret a message        
         for (var i = 0; i < chunk.length - 5; i++) {
             mSrc = chunk[i + 0];
-            mLen = chunk[i + 1] - 1; // ignore the DST
+            mLen = chunk[i + 1];
             mDst = chunk[i + 2];
 
-            console.log('Found: ', mSrc, mLen, mDst);
-
             // test to see if have enough data for a complete message
-            if (chunk.length > (i + 3 + mLen + 1)) {
+            if (chunk.length >= (i + 2 + mLen)) {
 
-                mMsg = chunk.slice(i + 4, mLen);
-                mCrc = chunk[i + 3 + mLen];
+                mMsg = chunk.slice(i + 2, i + 2 + mLen - 1);
+                mCrc = chunk[i + 2 + mLen - 1];
 
                 messages.push({
-                    'src': mSrc,
+                    'src': mSrc.toString(16),
                     'len': mLen,
-                    'dst': mDst,
-                    'msg': mMsg.toString('utf-8'),
-                    'crc': mCrc,
+                    'dst': mDst.toString(16),
+                    'msg': mMsg,
+                    'crc': mCrc.toString(16),
                 });
 
                 // mark end of last message
