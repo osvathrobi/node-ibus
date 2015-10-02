@@ -3,8 +3,8 @@
     "version": "0.0.0",
     "dependencies": {
         "serialport": "*",
-        "virtual-serialport": "*",
-        "bloader": "*"
+        "q": "*",
+        "log": "*"
     }
 
 }
