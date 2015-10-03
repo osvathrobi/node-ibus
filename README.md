@@ -4,7 +4,9 @@ BMW IBUS interface implementation in JavaScript intended for use with NodeJS. (o
 
 ## Details
 
-This is  an async event based implementation of the protocol using transform streams and is not relying on the bus quite time to detect valid message packets. It should capture much more of the messages even if the device is busy reacting to them. It works by analyzing and consuming the stream chunks, the limit of the buffer can be manually set to protect from overflow.
+This is  an async event based implementation of the protocol using transform streams and is not relying on the bus quiet time to detect message packet boundries. (this also means it can be tested with ibus data logs)
+
+It should capture much more of the IBUS messages even if your device is busy reacting to them. It works by analyzing and consuming stream chunks which are buffering while the device is busy. The limit of the buffer can be manually set to protect from overflow.
 
 
 ## Install
