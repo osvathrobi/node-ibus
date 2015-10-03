@@ -27,7 +27,7 @@ tba
 
 ### Raw IBUS data stream files
 
-in the src/raw folder I have sniffed and logged some of the data that goes through the stream.
+in the src/raw folder I have sniffed and logged some of the data that goes through the IBUS stream of a BMW X3 E83 from 2010.
 
 ```test1.bin```, ```BMW_IBUS_1.bin``` and ```BMW_IBUS_2.bin```
 
