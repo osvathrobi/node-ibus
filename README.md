@@ -1,6 +1,6 @@
 # node-bmw-ibus
 
-BMW IBUS interface protocol implementation in JavaScript intended for NodeJS on the RaspberryPi. 
+BMW IBUS interface implementation in JavaScript intended for use with NodeJS. (on the RaspberryPi, pc, etc.)
 
 ## Details
 
