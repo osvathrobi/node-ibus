@@ -42,8 +42,10 @@ var IbusInterface = function() {
                 serialPort.pipe(parser);
 
                 parser.on('message', function(msg) {
-                    console.log('Got a validated message!!', msg);
-                })
+                    //if (msg.src === '68') {
+                        console.log('Got a validated message!!', msg.src, msg.len, msg.dst, msg.msg.toString('ascii'), 'CRC: ', msg.crc);
+                    //}
+                });
 
             }
         });

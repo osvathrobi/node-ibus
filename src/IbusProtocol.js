@@ -2,6 +2,9 @@ var util = require('util');
 var Transform = require('stream').Transform;
 util.inherits(IbusProtocol, Transform);
 
+var Log = require('log'),
+    log = new Log('debug');
+
 function IbusProtocol(options) {
     if (!(this instanceof IbusProtocol))
         return new IbusProtocol(options);
@@ -19,7 +22,7 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
         // don't bother with this chunk, gather more data
         this.push(chunk);
     } else {
-        console.log('Analyzing: ', chunk);
+        log.debug('Analyzing: ', chunk);
 
         // gather messages from current chunk
         var messages = [];
@@ -41,22 +44,36 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
             // test to see if have enough data for a complete message
             if (chunk.length >= (i + 2 + mLen)) {
 
-                mMsg = chunk.slice(i + 2, i + 2 + mLen - 1);
+                mMsg = chunk.slice(i + 3, i + 3 + mLen - 2);
                 mCrc = chunk[i + 2 + mLen - 1];
 
-                messages.push({
-                    'src': mSrc.toString(16),
-                    'len': mLen,
-                    'dst': mDst.toString(16),
-                    'msg': mMsg,
-                    'crc': mCrc.toString(16),
-                });
+                var crc = 0x00;
 
-                // mark end of last message
-                lastFind = (i + 3 + mLen + 1);
+                crc = crc ^ mSrc;
+                crc = crc ^ mLen;
+                crc = crc ^ mDst;
 
-                // skip ahead
-                i = (i + 3 + mLen + 1);
+                for (var j = 0; j < mMsg.length; j++) {
+                    crc = crc ^ mMsg[j];
+                }
+
+                //log.debug('Crc: ', mCrc, ' Computed Crc:', crc);
+
+                if (crc === mCrc) {
+                    messages.push({
+                        'src': mSrc.toString(16),
+                        'len': mLen.toString(16),
+                        'dst': mDst.toString(16),
+                        'msg': mMsg,
+                        'crc': mCrc.toString(16)
+                    });
+
+                    // mark end of last message
+                    lastFind = (i + 3 + mLen + 1);
+
+                    // skip ahead
+                    i = (i + 2 + mLen + 1);
+                }
             }
         }
 
