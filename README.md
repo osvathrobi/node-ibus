@@ -1,5 +1,12 @@
 # node-bmw-ibus
 
+BMW IBUS interface protocol implementation in JavaScript intended for NodeJS on the RaspberryPi. 
+
+## Details
+
+This is  an async event based implementation of the protocol using transform streams and is not relying on the bus quite time to detect valid message packets. It should capture much more of the messages even if the device is busy reacting to them. It works by analyzing and consuming the stream chunks, the limit of the buffer can be manually set to protect from overflow.
+
+
 ## Install
 
 ```npm install```
