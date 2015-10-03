@@ -37,7 +37,7 @@ You can play back these log files to a virtual serial device and test your code.
 
 ```socat -d -d PTY PTY```
 
-This will create 2 devices: ex ```/dev/ttys003``` and ```/dev/ttys003```
+This will create 2 devices: ex ```/dev/ttys003``` and ```/dev/ttys006```
 
 You start IbusReader with the master (ex ```/dev/ttys003```) and send traffic to the slave (ex ```/dev/ttys006```)
 
