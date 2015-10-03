@@ -1,15 +1,29 @@
 # node-bmw-ibus
 
+## Install
+
+```npm install```
+
+## Configuration
+
+tba
 
 
-= Running
+## Running
 
-= Testing
+```node IbusReader.js```
 
-== Setting up a virtual Serial Device
+
+## Testing
+
+### Raw IBUS data stream files
+
+in the src/raw folders I have sniffed and logged some of the data that goes through the stream.
+
+### Setting up a virtual Serial Device
 ```sudo socat -d -d -d -d -lf /tmp/socat pty,link=/dev/master,raw,echo=0,user=matt,group=staff pty,link=/dev/slave,raw,echo=0,user=matt,group=staff```
 
-==Simulating IBUS
+### Simulating IBUS
 
 From the src/raw folder run:
 
