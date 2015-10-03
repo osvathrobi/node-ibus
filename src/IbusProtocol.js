@@ -3,7 +3,7 @@ var Transform = require('stream').Transform;
 util.inherits(IbusProtocol, Transform);
 
 var Log = require('log'),
-    log = new Log('debug');
+    log = new Log('info');
 
 function IbusProtocol(options) {
     if (!(this instanceof IbusProtocol))

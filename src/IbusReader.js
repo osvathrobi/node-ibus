@@ -3,7 +3,8 @@ var Log = require('log'),
     log = new Log('debug');
 
 // config
-var device = '/dev/ttys003';
+//var device = '/dev/ttys003';
+var device = '/dev/cu.usbserial-A601HPGR';
 
 // data
 var ibusInterface = new IbusInterface();
