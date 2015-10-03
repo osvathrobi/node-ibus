@@ -18,12 +18,21 @@ tba
 
 ### Raw IBUS data stream files
 
-in the src/raw folders I have sniffed and logged some of the data that goes through the stream.
+in the src/raw folder I have sniffed and logged some of the data that goes through the stream.
+
+```test1.bin```, ```BMW_IBUS_1.bin``` and ```BMW_IBUS_2.bin```
+
+You can play back this logfile to a virtual serial device and test your code.
 
 ### Setting up a virtual Serial Device
-```sudo socat -d -d -d -d -lf /tmp/socat pty,link=/dev/master,raw,echo=0,user=matt,group=staff pty,link=/dev/slave,raw,echo=0,user=matt,group=staff```
 
-### Simulating IBUS
+```socat -d -d PTY PTY```
+
+This will create 2 devices: ex ```/dev/ttys003``` and ```/dev/ttys003```
+
+You start IbusReader with the master (ex ```/dev/ttys003```) and send traffic to the slave (ex ```/dev/ttys006```)
+
+### Simulating IBUS traffic on the serial slave
 
 From the src/raw folder run:
 
