@@ -31,7 +31,7 @@ in the src/raw folder I have sniffed and logged some of the data that goes throu
 
 ```test1.bin```, ```BMW_IBUS_1.bin``` and ```BMW_IBUS_2.bin```
 
-You can play back this logfile to a virtual serial device and test your code.
+You can play back these log files to a virtual serial device and test your code.
 
 ### Setting up a virtual Serial Device
 
