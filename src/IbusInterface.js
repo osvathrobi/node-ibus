@@ -1,8 +1,10 @@
 var serialport = require("serialport");
 var Log = require('log'),
-    log = new Log('debug');
+    log = new Log('info');
+var fs = require('fs'); 
 
 var IbusProtocol = require('./IbusProtocol.js');
+var IbusDevices = require('./IbusDevices.js');
 
 var IbusInterface = function() {
 
@@ -19,10 +21,13 @@ var IbusInterface = function() {
     // local data
     var serialPort = null;
     var device = device;
+    var wstream;
+    var parser;
 
     // implementation
     function initIBUS(devicePath) {
         device = devicePath;
+
         serialPort = new serialport.SerialPort(devicePath || "/dev/ttys003", {
             baudrate: 9600,
             parity: 'even',
@@ -38,15 +43,14 @@ var IbusInterface = function() {
 
                 log.info('Port Open [' + device + ']');
 
-                var parser = new IbusProtocol();
+                wstream = fs.createWriteStream('raw/dumps/' + Date.now() + '_ibus.bin');
+
+                parser = new IbusProtocol();
+
+                parser.on('message', onMessage);
+
                 serialPort.pipe(parser);
-
-                parser.on('message', function(msg) {
-                    //if (msg.src === '68') {
-                        console.log('Got a validated message!!', msg.src, msg.len, msg.dst, msg.msg.toString('ascii'), 'CRC: ', msg.crc);
-                    //}
-                });
-
+                serialPort.pipe(wstream);
             }
         });
     }
@@ -66,8 +70,15 @@ var IbusInterface = function() {
 
     function shutdown() {
         closeIBUS();
+        wstream.close();
     }
 
+    function onMessage(msg) {
+        log.debug('Message: ', msg.src, msg.len, msg.dst, msg.msg, '[' + msg.msg.toString('ascii') + ']');
+        console.log('[' + IbusDevices.getDeviceName(msg.src) + '] to [' + IbusDevices.getDeviceName(msg.dst) + "]");
+        console.log(msg.msg.slice(0, 16));
+        console.log("");
+    }
 };
 
 module.exports = IbusInterface;

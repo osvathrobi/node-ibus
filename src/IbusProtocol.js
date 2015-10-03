@@ -19,7 +19,7 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
     var _self = this;
 
     if (chunk.length < 5) {
-        // don't bother with this chunk, gather more data
+        // chunk too small, gather more data
         this.push(chunk);
     } else {
         log.debug('Analyzing: ', chunk);
@@ -35,8 +35,11 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
         var mMsg;
         var mCrc;
 
-        // try to interpret a message        
+        // look for messages in current chunk
         for (var i = 0; i < chunk.length - 5; i++) {
+            // Try to interpret message
+
+            // BEGIN MESSAGE
             mSrc = chunk[i + 0];
             mLen = chunk[i + 1];
             mDst = chunk[i + 2];
@@ -57,8 +60,6 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
                     crc = crc ^ mMsg[j];
                 }
 
-                //log.debug('Crc: ', mCrc, ' Computed Crc:', crc);
-
                 if (crc === mCrc) {
                     messages.push({
                         'src': mSrc.toString(16),
@@ -69,12 +70,13 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
                     });
 
                     // mark end of last message
-                    lastFind = (i + 3 + mLen + 1);
+                    lastFind = (i + 1 + mLen);
 
                     // skip ahead
-                    i = (i + 2 + mLen + 1);
+                    i = (i + 1 + mLen);
                 }
             }
+            // END MESSAGE
         }
 
         if (messages.length > 0) {
@@ -83,15 +85,19 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
             });
         }
 
-
+        // Push the remaining data back to the stream
         if (lastFind !== -1) {
+            // Push the remaining chunk from the end of the last valid Message
             this.push(chunk.slice(lastFind));
         } else {
-            // drop data, reinterpret from last 20 positions
-            if (chunk.length > 100000) {
-                console.log('dropping some data..');
-                this.push(chunk.slice(20000));
+            // Push the entire chunk
+            if (chunk.length > 100) {
+                // Chunk too big? (overflow protection)
+                // ex: faulty device floods the bus with invalid messages)
+                log.warn('dropping some data..');
+                this.push(chunk.slice(20));
             } else {
+                // This chunk is just fine
                 this.push(chunk);
             }
         }
@@ -102,7 +108,6 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
 
 module.exports = IbusProtocol;
 // Usage:
-// var parser = new SimpleProtocol();
+// var parser = new IbusProtocol();
 // source.pipe(parser)
-// Now parser is a readable stream that will emit 'header'
-// with the parsed header data.
+// Now parser is a readable stream that will emit 'message'
