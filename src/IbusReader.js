@@ -28,7 +28,7 @@ function init() {
 
 // main start
 init();
-
+/*
 setInterval(function() {
 	ibusInterface.sendMessage({
 		src: 0x50,
@@ -36,3 +36,4 @@ setInterval(function() {
 		msg: new Buffer([0x03b, 0x21])
 	});
 }, 1000);
+*/
