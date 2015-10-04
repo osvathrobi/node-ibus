@@ -88,6 +88,8 @@ var IbusInterface = function(devicePath) {
             return;
         }
 
+        // TODO: wait for a quiet bus before sending the message (be nice! :) )
+
         var dataBuf = parser.createIbusMessage(msg);
 
         log.debug('Writing to Ibus: ', dataBuf);
