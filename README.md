@@ -8,6 +8,10 @@ This is  an async event based implementation of the protocol using transform str
 
 It should capture much more of the IBUS messages even if your device is busy reacting to them. It works by analyzing and consuming stream chunks which are buffering while the device is busy. The limit of the buffer can be manually set to protect from overflow.
 
+## TODO
+
+- Implement write to Ibus stream
+
 
 ## Install
 
@@ -15,7 +19,15 @@ It should capture much more of the IBUS messages even if your device is busy rea
 
 ## Configuration
 
-tba
+- TODO
+
+## Usage
+
+- TODO
+
+## Documentation
+
+- TODO
 
 
 ## Running

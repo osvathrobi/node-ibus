@@ -1,8 +1,8 @@
 var IbusInterface = require('./IbusInterface.js');
+var IbusDevices = require('./IbusDevices.js');
 
 // config
 var device = '/dev/ttys003';
-//var device = '/dev/cu.usbserial-A601HPGR';
 
 // data
 var ibusInterface = new IbusInterface(device);
@@ -18,7 +18,9 @@ function onSignalInt() {
 }
 
 function onIbusData(data) {
-	console.log('GOT some ', data);
+	console.log('From: 	  ', IbusDevices.getDeviceName(data.src));
+	console.log('To: 	  ', IbusDevices.getDeviceName(data.dst));
+	console.log('Message: ', data.msg, '\n');
 }
 
 function init() {
