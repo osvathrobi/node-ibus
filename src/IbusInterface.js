@@ -1,7 +1,7 @@
 var serialport = require("serialport");
 var Log = require('log'),
     log = new Log('info');
-var util = require('util'); 
+var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
 var IbusProtocol = require('./IbusProtocol.js');
@@ -18,6 +18,7 @@ var IbusInterface = function(devicePath) {
     this.closeIBUS = closeIBUS;
     this.startup = startup;
     this.shutdown = shutdown;
+    this.sendMessage = sendMessage;
 
     // local data
     var serialPort;
@@ -39,7 +40,7 @@ var IbusInterface = function(devicePath) {
                 log.error('Failed to open: ' + error);
             } else {
                 log.info('Port Open [' + device + ']');
-                
+
                 parser = new IbusProtocol();
                 parser.on('message', onMessage);
 
@@ -48,9 +49,17 @@ var IbusInterface = function(devicePath) {
         });
     }
 
-    function closeIBUS() {
-        log.info('Port Closed [' + device + ']');
-        serialPort.close();
+    function closeIBUS(callb) {
+        serialPort.close(function(error) {
+            if (error) {
+                log.error('Error closing port: ', error);
+                callb(error);
+            } else {
+                log.info('Port Closed [' + device + ']');
+                parser = null;
+                callb();
+            }
+        });
     }
 
     function getInterface() {
@@ -61,8 +70,9 @@ var IbusInterface = function(devicePath) {
         initIBUS();
     }
 
-    function shutdown() {
-        closeIBUS();
+    function shutdown(callb) {
+        log.info('Shutting down Ibus device..');
+        closeIBUS(callb);
     }
 
     function onMessage(msg) {
@@ -71,6 +81,25 @@ var IbusInterface = function(devicePath) {
         log.debug(msg.msg.slice(0, 16));
 
         _self.emit('data', msg);
+    }
+
+    function sendMessage(msg) {
+        if (!parser) {
+            return;
+        }
+
+        var dataBuf = parser.createIbusMessage(msg);
+
+        log.debug('Writing to Ibus: ', dataBuf);
+
+        serialPort.write(dataBuf, function(error) {
+            if (error) {
+                log.error('Failed to write: ' + error);
+            } else {
+                parser.write(dataBuf);
+            }
+
+        });
     }
 };
 

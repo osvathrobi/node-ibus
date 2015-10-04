@@ -35,7 +35,7 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
 
         // look for messages in current chunk
         for (var i = 0; i < chunk.length - 5; i++) {
-            
+
             // BEGIN MESSAGE
             mSrc = chunk[i + 0];
             mLen = chunk[i + 1];
@@ -100,6 +100,29 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
     }
 
     done();
+};
+
+IbusProtocol.prototype.createIbusMessage = function(msg) {
+    // 1 + 1 + 1 + msgLen + 1
+    var packetLength = 4 + msg.msg.length;
+    var buf = new Buffer(packetLength);
+
+    buf[0] = msg.src;
+    buf[1] = msg.msg.length + 2;
+    buf[2] = msg.dst;
+
+    for (var i = 0; i < msg.msg.length; i++) {
+        buf[3 + i] = msg.msg[i];
+    }
+
+    var crc = 0x00;
+    for (var i = 0; i < buf.length - 1; i++) {
+        crc ^= buf[i];
+    }
+
+    buf[3 + msg.msg.length] = crc;
+
+    return buf;
 };
 
 module.exports = IbusProtocol;

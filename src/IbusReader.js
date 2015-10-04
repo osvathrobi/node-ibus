@@ -2,7 +2,7 @@ var IbusInterface = require('./IbusInterface.js');
 var IbusDevices = require('./IbusDevices.js');
 
 // config
-var device = '/dev/ttys003';
+var device = '/dev/ttys002';
 
 // data
 var ibusInterface = new IbusInterface(device);
@@ -13,8 +13,7 @@ ibusInterface.on('data', onIbusData);
 
 // implementation
 function onSignalInt() {
-    ibusInterface.shutdown();
-    process.exit();
+    ibusInterface.shutdown(process.exit);    
 }
 
 function onIbusData(data) {
@@ -29,3 +28,11 @@ function init() {
 
 // main start
 init();
+
+setInterval(function() {
+	ibusInterface.sendMessage({
+		src: 0x50,
+		dst: 0xc8,
+		msg: new Buffer([0x03b, 0x21])
+	});
+}, 1000);
