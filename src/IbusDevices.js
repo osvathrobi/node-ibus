@@ -52,6 +52,8 @@ function getDeviceName(key) {
             return dkey + ' - ' + key;
         }
     }
+    
+    return "Unknown Device" + ' - ' + key;
 };
 
 module.exports = IbusDevices;

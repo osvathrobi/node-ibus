@@ -10,8 +10,6 @@ function IbusProtocol(options) {
         return new IbusProtocol(options);
 
     Transform.call(this, options);
-    this._oldChunk = '';
-
 }
 
 
@@ -37,8 +35,7 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
 
         // look for messages in current chunk
         for (var i = 0; i < chunk.length - 5; i++) {
-            // Try to interpret message
-
+            
             // BEGIN MESSAGE
             mSrc = chunk[i + 0];
             mLen = chunk[i + 1];
@@ -91,11 +88,10 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
             this.push(chunk.slice(lastFind));
         } else {
             // Push the entire chunk
-            if (chunk.length > 100) {
+            if (chunk.length > 2000) {
                 // Chunk too big? (overflow protection)
-                // ex: faulty device floods the bus with invalid messages)
                 log.warn('dropping some data..');
-                this.push(chunk.slice(20));
+                this.push(chunk.slice(500));
             } else {
                 // This chunk is just fine
                 this.push(chunk);
@@ -107,7 +103,3 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
 };
 
 module.exports = IbusProtocol;
-// Usage:
-// var parser = new IbusProtocol();
-// source.pipe(parser)
-// Now parser is a readable stream that will emit 'message'
