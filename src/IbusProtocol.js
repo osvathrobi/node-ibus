@@ -3,22 +3,26 @@ var Transform = require('stream').Transform;
 util.inherits(IbusProtocol, Transform);
 
 var Log = require('log'),
-    log = new Log('info');
+    log = new Log('debug');
 
 function IbusProtocol(options) {
     if (!(this instanceof IbusProtocol))
         return new IbusProtocol(options);
 
     Transform.call(this, options);
+    this._buffer = new Buffer(0);
 }
 
 
 IbusProtocol.prototype._transform = function(chunk, encoding, done) {
     var _self = this;
 
+    _self._buffer = Buffer.concat([_self._buffer, chunk]);
+
+    chunk = _self._buffer;    
+
     if (chunk.length < 5) {
         // chunk too small, gather more data
-        this.push(chunk);
     } else {
         log.debug('Analyzing: ', chunk);
 
@@ -59,6 +63,7 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
 
                 if (crc === mCrc) {
                     messages.push({
+                        'id' : Date.now(),
                         'src': mSrc.toString(16),
                         'len': mLen.toString(16),
                         'dst': mDst.toString(16),
@@ -85,20 +90,18 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
         // Push the remaining data back to the stream
         if (lastFind !== -1) {
             // Push the remaining chunk from the end of the last valid Message
-            this.push(chunk.slice(lastFind));
+            _self._buffer = _self._buffer.slice(lastFind);
         } else {
             // Push the entire chunk
-            if (chunk.length > 2000) {
+            if (_self._buffer.length > 2000) {
                 // Chunk too big? (overflow protection)
-                log.warn('dropping some data..');
-                this.push(chunk.slice(500));
-            } else {
-                // This chunk is just fine
-                this.push(chunk);
+                log.warning('dropping some data..');
+                _self._buffer = _self._buffer.slice(500);
             }
         }
     }
 
+    log.debug('Buffered messages size: ', _self._buffer.length);
     done();
 };
 

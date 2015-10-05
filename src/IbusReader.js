@@ -17,6 +17,7 @@ function onSignalInt() {
 }
 
 function onIbusData(data) {
+	console.log('Id: 	  ', data.id);
 	console.log('From: 	  ', IbusDevices.getDeviceName(data.src));
 	console.log('To: 	  ', IbusDevices.getDeviceName(data.dst));
 	console.log('Message: ', data.msg, '\n');
