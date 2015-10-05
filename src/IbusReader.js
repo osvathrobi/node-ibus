@@ -2,7 +2,7 @@ var IbusInterface = require('./IbusInterface.js');
 var IbusDevices = require('./IbusDevices.js');
 
 // config
-var device = '/dev/ttys002';
+var device = '/dev/ttys003';
 
 // data
 var ibusInterface = new IbusInterface(device);

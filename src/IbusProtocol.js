@@ -6,8 +6,12 @@ var Log = require('log'),
     log = new Log('debug');
 
 function IbusProtocol(options) {
+    options = options || {};
+
     if (!(this instanceof IbusProtocol))
         return new IbusProtocol(options);
+    
+    //options.readableObjectMode = true;
 
     Transform.call(this, options);
     this._buffer = new Buffer(0);
@@ -29,7 +33,7 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
         // gather messages from current chunk
         var messages = [];
 
-        var lastFind = -1;
+        var endOfLastMessage = -1;
 
         var mSrc;
         var mLen;
@@ -72,10 +76,10 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
                     });
 
                     // mark end of last message
-                    lastFind = (i + 1 + mLen);
+                    endOfLastMessage = (i + 1 + mLen);
 
                     // skip ahead
-                    i = (i + 1 + mLen);
+                    i = endOfLastMessage;
                 }
             }
             // END MESSAGE
@@ -88,15 +92,15 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
         }
 
         // Push the remaining data back to the stream
-        if (lastFind !== -1) {
+        if (endOfLastMessage !== -1) {
             // Push the remaining chunk from the end of the last valid Message
-            _self._buffer = _self._buffer.slice(lastFind);
+            _self._buffer = chunk.slice(endOfLastMessage + 1);
         } else {
             // Push the entire chunk
-            if (_self._buffer.length > 2000) {
+            if (_self._buffer.length > 500) {
                 // Chunk too big? (overflow protection)
                 log.warning('dropping some data..');
-                _self._buffer = _self._buffer.slice(500);
+                _self._buffer = chunk.slice(300);
             }
         }
     }
