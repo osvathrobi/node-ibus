@@ -15,7 +15,7 @@ While being mostly an async implementation the write queue however relies on set
 
 ## Usage
 
-Reuire the packages you need.
+Require the packages you want to use.
 
 ```
 var IbusInterface = require('ibus').IbusInterface;
@@ -39,7 +39,7 @@ function init() {
 init();
 ```
 
-Add an event listener on the interface.
+Add an event listener on the ibus interface output stream.
 
 ```
 // events
@@ -53,7 +53,7 @@ function onIbusData(data) {
 }
 ```
 
-Cleanup device when exiting.
+Cleanup and close the device when exiting.
 
 ```
 // implementation
