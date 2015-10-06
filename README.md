@@ -1,16 +1,11 @@
 # node-bmw-ibus
 
-BMW IBUS interface implementation in JavaScript intended for use with NodeJS. (on the RaspberryPi, pc, etc.)
+This is a JavaScript implementation of the BMW single wire Ibus protocol. (on the RaspberryPi, pc, etc.)
 
 ## Details
 
-This is  an async event based implementation of the protocol using transform streams and is not relying on the bus quiet time to detect message packet boundries. (this also means it can be tested with ibus data logs)
-
-It should capture much more of the IBUS messages even if your device is busy reacting to them. It works by analyzing and consuming stream chunks which are buffering while the device is busy. The limit of the buffer can be manually set to protect from overflow.
-
-## TODO
-
-- Implement write to Ibus stream
+You can use this package with Resler's interface (http://www.reslers.de/IBUS/index.html) or similar Ibus adapters.
+While being mostly an async implementation the write queue however relies on setImmediate to detectes idle state on the bus. It then processes a write queue when the bus is being idle for more then 2 ms.
 
 
 ## Install
