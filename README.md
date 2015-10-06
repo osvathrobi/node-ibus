@@ -10,7 +10,7 @@ While being mostly an async implementation the write queue however relies on set
 
 ## Install
 
-```npm install```
+```npm install ibus```
 
 
 ## Usage
