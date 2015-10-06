@@ -1,12 +1,10 @@
 {
   "name": "ibus",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "dependencies": {
     "serialport": "*",
-    "q": "*",
     "log": "*",
-    "cli-color": "*",
-    "async": "*"
+    "cli-color": "*"
   },
   "description": "This is a JavaScript implementation of the single wire Ibus protocol found on many BMWs and some of Mini, Land Rover, MG cars. (intended for homebrew use with the RaspberryPi, PC, etc.)",
   "main": "index.js",
