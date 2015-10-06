@@ -3,32 +3,50 @@ var Transform = require('stream').Transform;
 util.inherits(IbusProtocol, Transform);
 
 var Log = require('log'),
-    log = new Log('debug');
+    log = new Log('info'),
+    clc = require('cli-color');
 
 function IbusProtocol(options) {
     options = options || {};
 
     if (!(this instanceof IbusProtocol))
         return new IbusProtocol(options);
-    
-    //options.readableObjectMode = true;
 
     Transform.call(this, options);
     this._buffer = new Buffer(0);
+    this._processId = 0;
+    this._isProcessing = false;
 }
 
 
-IbusProtocol.prototype._transform = function(chunk, encoding, done) {
+IbusProtocol.prototype._transform = function(chunk, encoding, done) {        
     var _self = this;
+    
+    if(_self._isProcessing === true) {
+        log.error('[IbusProtocol]', clc.red('Error. This _transform function should NOT be running..'));
+    }
+
+    _self._isProcessing = true;
+
+    log.debug('[IbusProtocol]',clc.white('Processing: '), _self._processId);
+
+    log.debug('[IbusProtocol]','Current buffer: ', _self._buffer);
+
+    log.debug('[IbusProtocol]','Current chunk: ', chunk);
+
+    _self._processId++;
 
     _self._buffer = Buffer.concat([_self._buffer, chunk]);
 
-    chunk = _self._buffer;    
+    var cchunk = _self._buffer;
 
-    if (chunk.length < 5) {
+    log.debug('[IbusProtocol]','Concated chunk: ', cchunk);
+
+
+    if (cchunk.length < 5) {
         // chunk too small, gather more data
     } else {
-        log.debug('Analyzing: ', chunk);
+        log.debug('[IbusProtocol]','Analyzing: ', cchunk);
 
         // gather messages from current chunk
         var messages = [];
@@ -42,18 +60,18 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
         var mCrc;
 
         // look for messages in current chunk
-        for (var i = 0; i < chunk.length - 5; i++) {
+        for (var i = 0; i < cchunk.length - 5; i++) {
 
             // BEGIN MESSAGE
-            mSrc = chunk[i + 0];
-            mLen = chunk[i + 1];
-            mDst = chunk[i + 2];
+            mSrc = cchunk[i + 0];
+            mLen = cchunk[i + 1];
+            mDst = cchunk[i + 2];
 
             // test to see if have enough data for a complete message
-            if (chunk.length >= (i + 2 + mLen)) {
+            if (cchunk.length >= (i + 2 + mLen)) {
 
-                mMsg = chunk.slice(i + 3, i + 3 + mLen - 2);
-                mCrc = chunk[i + 2 + mLen - 1];
+                mMsg = cchunk.slice(i + 3, i + 3 + mLen - 2);
+                mCrc = cchunk[i + 2 + mLen - 1];
 
                 var crc = 0x00;
 
@@ -76,7 +94,7 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
                     });
 
                     // mark end of last message
-                    endOfLastMessage = (i + 1 + mLen);
+                    endOfLastMessage = (i + 2 + mLen);
 
                     // skip ahead
                     i = endOfLastMessage;
@@ -94,22 +112,27 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
         // Push the remaining data back to the stream
         if (endOfLastMessage !== -1) {
             // Push the remaining chunk from the end of the last valid Message
-            _self._buffer = chunk.slice(endOfLastMessage + 1);
+            _self._buffer = cchunk.slice(endOfLastMessage);
+
+            log.debug('[IbusProtocol]',clc.yellow('Sliced data: '), endOfLastMessage, _self._buffer);
         } else {
             // Push the entire chunk
             if (_self._buffer.length > 500) {
                 // Chunk too big? (overflow protection)
-                log.warning('dropping some data..');
-                _self._buffer = chunk.slice(300);
+                log.warning('[IbusProtocol]','dropping some data..');
+                _self._buffer = cchunk.slice(chunk.length - 300);
             }
         }
     }
 
-    log.debug('Buffered messages size: ', _self._buffer.length);
+    log.debug('[IbusProtocol]','Buffered messages size: ', _self._buffer.length);
+
+    _self._isProcessing = false;
+
     done();
 };
 
-IbusProtocol.prototype.createIbusMessage = function(msg) {
+IbusProtocol.createIbusMessage = function(msg) {
     // 1 + 1 + 1 + msgLen + 1
     var packetLength = 4 + msg.msg.length;
     var buf = new Buffer(packetLength);

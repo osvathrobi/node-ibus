@@ -4,7 +4,9 @@
     "dependencies": {
         "serialport": "*",
         "q": "*",
-        "log": "*"
+        "log": "*",
+        "cli-color": "*",
+        "async": "*"
     }
 
 }

@@ -2,7 +2,8 @@ var IbusInterface = require('./IbusInterface.js');
 var IbusDevices = require('./IbusDevices.js');
 
 // config
-var device = '/dev/ttys003';
+//var device = '/dev/ttys003';
+var device = '/dev/cu.usbserial-AH02DHFV';
 
 // data
 var ibusInterface = new IbusInterface(device);
@@ -13,14 +14,16 @@ ibusInterface.on('data', onIbusData);
 
 // implementation
 function onSignalInt() {
-    ibusInterface.shutdown(process.exit);    
+    ibusInterface.shutdown(function() {
+        process.exit();
+    });
 }
 
 function onIbusData(data) {
-	console.log('Id: 	  ', data.id);
-	console.log('From: 	  ', IbusDevices.getDeviceName(data.src));
-	console.log('To: 	  ', IbusDevices.getDeviceName(data.dst));
-	console.log('Message: ', data.msg, '\n');
+    console.log('[IbusReader]', 'Id: 	  ', data.id);
+    console.log('[IbusReader]','From: 	  ', IbusDevices.getDeviceName(data.src));
+    console.log('[IbusReader]','To: 	  ', IbusDevices.getDeviceName(data.dst));
+    console.log('[IbusReader]','Message: ', data.msg, '\n');
 }
 
 function init() {
@@ -29,12 +32,11 @@ function init() {
 
 // main start
 init();
-/*
-setInterval(function() {
-	ibusInterface.sendMessage({
-		src: 0x50,
-		dst: 0xc8,
-		msg: new Buffer([0x03b, 0x21])
-	});
-}, 1000);
-*/
+
+for(var i=0;i<10;i++) {
+    ibusInterface.sendMessage({
+        src: 0x08,
+        dst: 0x18,
+        msg: new Buffer([0x0AA, 0xBB, i, 0xCC, 0xDD, 0xEE])
+    });
+}
