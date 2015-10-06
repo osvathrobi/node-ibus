@@ -5,7 +5,6 @@ var Log = require('log'),
 
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
-var async = require("async");
 
 var IbusProtocol = require('./IbusProtocol.js');
 var IbusDevices = require('./IbusDevices.js');

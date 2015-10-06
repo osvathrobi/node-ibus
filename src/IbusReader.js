@@ -21,9 +21,9 @@ function onSignalInt() {
 
 function onIbusData(data) {
     console.log('[IbusReader]', 'Id: 	  ', data.id);
-    console.log('[IbusReader]','From: 	  ', IbusDevices.getDeviceName(data.src));
-    console.log('[IbusReader]','To: 	  ', IbusDevices.getDeviceName(data.dst));
-    console.log('[IbusReader]','Message: ', data.msg, '\n');
+    console.log('[IbusReader]', 'From: 	  ', IbusDevices.getDeviceName(data.src));
+    console.log('[IbusReader]', 'To: 	  ', IbusDevices.getDeviceName(data.dst));
+    console.log('[IbusReader]', 'Message: ', data.msg, '\n');
 }
 
 function init() {
@@ -33,7 +33,7 @@ function init() {
 // main start
 init();
 
-for(var i=0;i<10;i++) {
+for (var i = 0; i < 10; i++) {
     ibusInterface.sendMessage({
         src: 0x08,
         dst: 0x18,
