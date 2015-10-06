@@ -12,13 +12,59 @@ While being mostly an async implementation the write queue however relies on set
 
 ```npm install```
 
-## Configuration
-
-- TODO
 
 ## Usage
 
-- TODO
+Reuire the packages you need.
+
+```
+var IbusInterface = require('ibus').IbusInterface;
+var IbusDevices = require('ibus').IbusDevices;
+```
+
+Configure your device location
+
+```
+// config
+var device = '/dev/cu.usbserial-AH02DHFV';
+
+// setup interface
+var ibusInterface = new IbusInterface(device);
+
+function init() {
+    ibusInterface.startup();
+}
+
+// main start
+init();
+```
+
+Add an event listener on the interface.
+
+```
+// events
+ibusInterface.on('data', onIbusData);
+
+function onIbusData(data) {
+    console.log('[IbusReader]', 'Id: 	  ', data.id);
+    console.log('[IbusReader]', 'From: 	  ', IbusDevices.getDeviceName(data.src));
+    console.log('[IbusReader]', 'To: 	  ', IbusDevices.getDeviceName(data.dst));
+    console.log('[IbusReader]', 'Message: ', data.msg, '\n');
+}
+```
+
+Cleanup device when exiting.
+
+```
+// implementation
+process.on('SIGINT', onSignalInt);
+
+function onSignalInt() {
+    ibusInterface.shutdown(function() {
+        process.exit();
+    });
+}
+```
 
 ## Documentation
 
