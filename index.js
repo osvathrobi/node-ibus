@@ -1,8 +1,8 @@
 'use strict';
 
 
-var IbusInterface = require('./IbusInterface.js');
-var IbusDevices = require('./IbusDevices.js');
+var IbusInterface = require('./src/IbusInterface.js');
+var IbusDevices = require('./src/IbusDevices.js');
 
 module.exports = {
 	IbusInterface: IbusInterface,
