@@ -1,12 +1,35 @@
 {
-    "name": "superinviteApp",
-    "version": "0.0.0",
-    "dependencies": {
-        "serialport": "*",
-        "q": "*",
-        "log": "*",
-        "cli-color": "*",
-        "async": "*"
-    }
-
+  "name": "ibus",
+  "version": "0.0.2",
+  "dependencies": {
+    "serialport": "*",
+    "q": "*",
+    "log": "*",
+    "cli-color": "*",
+    "async": "*"
+  },
+  "description": "This is a JavaScript implementation of the single wire Ibus protocol found on many BMWs and some of Mini, Land Rover, MG cars. (intended for homebrew use with the RaspberryPi, PC, etc.)",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/osvathrobi/node-ibus.git"
+  },
+  "keywords": [
+    "bmw",
+    "ibus",
+    "protocol",
+    "serialport",
+    "e83",
+    "X3"
+  ],
+  "author": "Osvath - Boros Robert <osvathrobi@yahoo.com> (http://www.osvathrobert.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/osvathrobi/node-ibus/issues"
+  },
+  "homepage": "https://github.com/osvathrobi/node-ibus"
 }
