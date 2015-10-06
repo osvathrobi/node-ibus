@@ -97,7 +97,7 @@ IbusProtocol.prototype._transform = function(chunk, encoding, done) {
                     endOfLastMessage = (i + 2 + mLen);
 
                     // skip ahead
-                    i = endOfLastMessage;
+                    i = endOfLastMessage - 1;
                 }
             }
             // END MESSAGE

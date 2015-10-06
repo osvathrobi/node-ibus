@@ -33,10 +33,12 @@ function init() {
 // main start
 init();
 
-for (var i = 0; i < 10; i++) {
+/*
+for (var i = 0; i < 2; i++) {
     ibusInterface.sendMessage({
         src: 0x08,
         dst: 0x18,
         msg: new Buffer([0x0AA, 0xBB, i, 0xCC, 0xDD, 0xEE])
     });
 }
+*/

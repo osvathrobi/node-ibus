@@ -1,6 +1,6 @@
 var serialport = require("serialport");
 var Log = require('log'),
-    log = new Log('info'),
+    log = new Log('debug'),
     clc = require('cli-color');
 
 var util = require('util');
@@ -26,7 +26,7 @@ var IbusInterface = function(devicePath) {
     var serialPort;
     var device = devicePath;
     var parser;
-    var lastActivityTime = 0;
+    var lastActivityTime = process.hrtime();
     var queue = [];
 
 
@@ -47,9 +47,9 @@ var IbusInterface = function(devicePath) {
                 log.info('[IbusInterface] Port Open [' + device + ']');
 
                 serialPort.on('data', function(data) {
-                    log.debug('[IbusInterface] Data on port: ', data);
+                    //log.debug('[IbusInterface] Data on port: ', data);
 
-                    lastActivityTime = Date.now();
+                    lastActivityTime = process.hrtime();
                 });
 
                 serialPort.on('error', function(err) {
@@ -65,10 +65,18 @@ var IbusInterface = function(devicePath) {
                 watchForEmptyBus(processWriteQueue);
             }
         });
-    }    
+    }
+
+    function getHrDiffTime(time) {
+        // ts = [seconds, nanoseconds]
+        var ts = process.hrtime(time);
+        // convert seconds to miliseconds and nanoseconds to miliseconds as well
+        return (ts[0] * 1000) + (ts[1] / 1000000);
+    };
+
 
     function watchForEmptyBus(workerFn) {
-        if (Date.now() - lastActivityTime >= 2) {
+        if (getHrDiffTime(lastActivityTime) >= 1.4) {
             workerFn(function success() {
                 // operation is ready, resume looking for an empty bus
                 setImmediate(watchForEmptyBus, workerFn);
@@ -100,7 +108,7 @@ var IbusInterface = function(devicePath) {
                     log.debug(clc.white('Data drained'));
 
                     // this counts as an activity, so mark it
-                    lastActivityTime = Date.now(); 
+                    lastActivityTime = process.hrtime();
 
                     ready();
                 });
