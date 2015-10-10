@@ -75,7 +75,7 @@ var IbusInterface = function(devicePath) {
     };
 
 
-    function watchForEmptyBus(workerFn) {
+    function watchForEmptyBus(workerFn) {        
         if (getHrDiffTime(lastActivityTime) >= 1.4) {
             workerFn(function success() {
                 // operation is ready, resume looking for an empty bus
@@ -90,6 +90,7 @@ var IbusInterface = function(devicePath) {
     function processWriteQueue(ready) {
         // noop on empty queue
         if (queue.length <= 0) {
+            ready();
             return;
         }
 
@@ -102,7 +103,7 @@ var IbusInterface = function(devicePath) {
             if (error) {
                 log.error('[IbusInterface] Failed to write: ' + error);
             } else {
-                log.debug('[IbusInterface] ', clc.white('Wrote to Device: '), dataBuf, resp);
+                log.info('[IbusInterface] ', clc.white('Wrote to Device: '), dataBuf, resp);
 
                 serialPort.drain(function(error) {
                     log.debug(clc.white('Data drained'));
