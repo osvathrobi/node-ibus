@@ -76,7 +76,7 @@ var IbusInterface = function(devicePath) {
 
 
     function watchForEmptyBus(workerFn) {        
-        if (getHrDiffTime(lastActivityTime) >= 1.4) {
+        if (getHrDiffTime(lastActivityTime) >= 20) {
             workerFn(function success() {
                 // operation is ready, resume looking for an empty bus
                 setImmediate(watchForEmptyBus, workerFn);
