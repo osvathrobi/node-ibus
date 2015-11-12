@@ -3,6 +3,9 @@ var Log = require('log'),
     log = new Log('info'),
     clc = require('cli-color');
 
+var GpioStream = require('gpio-stream'),
+    ibusGPIO = GpioStream.readable(17),
+
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
@@ -32,6 +35,7 @@ var IbusInterface = function(devicePath) {
 
     // implementation
     function initIBUS() {
+        /*
         serialPort = new serialport.SerialPort(device, {
             baudrate: 9600,
             parity: 'even',
@@ -65,6 +69,12 @@ var IbusInterface = function(devicePath) {
                 watchForEmptyBus(processWriteQueue);
             }
         });
+        */
+
+        parser = new IbusProtocol();
+        parser.on('message', onMessage);
+
+        ibusGPIO.pipe(parser);
     }
 
     function getHrDiffTime(time) {
@@ -75,7 +85,7 @@ var IbusInterface = function(devicePath) {
     };
 
 
-    function watchForEmptyBus(workerFn) {        
+    function watchForEmptyBus(workerFn) {
         if (getHrDiffTime(lastActivityTime) >= 20) {
             workerFn(function success() {
                 // operation is ready, resume looking for an empty bus

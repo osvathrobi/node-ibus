@@ -1,4 +1,5 @@
 
+    // TOP SECTIONS
 
     // TOP - Bottom / Right
     // %bALWA
@@ -16,7 +17,6 @@
         msg: new Buffer([0xa5, 0x62, 0x01, 0x42, 0x50, 0x31])
     });
 
-    // TODO: ???
     // %bC    
     ibusInterface.sendMessage({
         src: 0x68,
@@ -43,13 +43,14 @@
     });
 
 
-    // TODO: ???
+    // Probably: REFRESH SCREEN TOP SECTION
     // %b
     ibusInterface.sendMessage({
         src: 0x68,
         dst: 0x3b,
         msg: new Buffer([0xa5, 0x62, 0x01, 0x00])
     });
+
 
     // SET NEW TITLE (LARGE TEXT)
     // #bLWA  153
@@ -115,7 +116,7 @@
     });
 
 
-    // REFRESH SCREEN
+    // REFRESH SCREEN (OPTIONS SECTION)
     // %`
     ibusInterface.sendMessage({
         src: 0x68,

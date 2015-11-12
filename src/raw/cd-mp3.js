@@ -148,6 +148,8 @@ ibusInterface.sendMessage({
     dst: 0x68,
     msg: new Buffer([0x48, 0x80])
 });
+
+
 // #bTR 00-006
 ibusInterface.sendMessage({
     src: 0x68,
