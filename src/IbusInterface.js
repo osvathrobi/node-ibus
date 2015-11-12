@@ -4,7 +4,7 @@ var Log = require('log'),
     clc = require('cli-color');
 
 var GpioStream = require('gpio-stream'),
-    ibusGPIO = GpioStream.readable(17),
+    ibusGPIO = GpioStream.readable(17);
 
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
