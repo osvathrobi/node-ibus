@@ -1,6 +1,6 @@
 var serialport = require("serialport");
 var Log = require('log'),
-    log = new Log('info'),
+    log = new Log('debug'),
     clc = require('cli-color');
 
 var util = require('util');

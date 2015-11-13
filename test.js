@@ -3,7 +3,7 @@ var IbusDevices = require('./index.js').IbusDevices;
 
 // config
 //var device = '/dev/ttys003';
-var device = '/dev/cu.usbserial-A601HPGR';
+var device = '/dev/ttyAMA0';
 
 // data
 var ibusInterface = new IbusInterface(device);
