@@ -47,7 +47,7 @@ var IbusInterface = function(devicePath) {
                 log.info('[IbusInterface] Port Open [' + device + ']');
 
                 serialPort.on('data', function(data) {
-                    //log.debug('[IbusInterface] Data on port: ', data);
+                    log.debug('[IbusInterface] Data on port: ', data);
 
                     lastActivityTime = process.hrtime();
                 });
