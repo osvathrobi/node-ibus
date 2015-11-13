@@ -28,4 +28,4 @@ function onIbusData(data) {
 }
 
 // main start
-//ibusInterface.startup();
+ibusInterface.startup();
