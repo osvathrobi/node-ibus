@@ -1,4 +1,4 @@
-var serialport = require("serialport");
+var SerialPort = require("serialport");
 var Log = require('log'),
     log = new Log('info'),
     clc = require('cli-color');
@@ -32,13 +32,14 @@ var IbusInterface = function(devicePath) {
 
     // implementation
     function initIBUS() {
-        serialPort = new serialport.SerialPort(device, {
+        serialPort = new SerialPort(device, {
+            autoOpen: false,
             baudrate: 9600,
             parity: 'even',
             stopbits: 1,
             databits: 8,
-            parser: serialport.parsers.raw
-        }, false);
+            parser: SerialPort.parsers.raw
+        });
 
         serialPort.open(function(error) {
             if (error) {
