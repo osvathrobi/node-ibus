@@ -1,7 +1,7 @@
 var SerialPort = require("serialport");
-var Log = require('log'),
-    log = new Log('info'),
+var log = require('log'),
     clc = require('cli-color');
+
 
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
